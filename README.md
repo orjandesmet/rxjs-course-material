@@ -33,6 +33,7 @@ Check out branch `exercises` for an overview of all exercises.
 
 * [Exercise 1: Promise to be good](exercises/EXERCISE01.md)
 * [Exercise 2: Cancelling and Observable](exercises/EXERCISE02.md)
+* [Exercise 3: Map Operator](exercises/EXERCISE03.md)
 
 ## Slides
 

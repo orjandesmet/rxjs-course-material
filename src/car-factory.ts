@@ -1,5 +1,6 @@
 import { Subscription } from 'rxjs';
 import { CarAssemblyLine } from './car-assembly-line';
+import { CarColor } from './model/car';
 
 export class CarFactory {
 
@@ -17,7 +18,7 @@ export class CarFactory {
         }
     }
 
-    createCarsInColor(color: string) {
+    createCarsInColor(color: CarColor) {
         if (this.isFactoryRunning()) {
             this.stopFactory();
         }
@@ -44,7 +45,7 @@ export class CarFactory {
         return this.subscription && !this.subscription.closed;
     }
 
-    private createCar(color: string) {
+    private createCar(color: CarColor) {
         return this.carAssemblyLine.createCarOnLine(color);
     }
 }

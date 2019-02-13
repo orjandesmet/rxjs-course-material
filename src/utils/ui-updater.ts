@@ -64,7 +64,7 @@ export class UIUpdater {
                 <div class="background" style="background-color: ${car.color};">
                 <div class="overlay"></div>
                 </div>
-
+                <span>${car.chassisNr}</span>
                 </div>`;
             }).reduce((acc, current) => acc + current);
         });
