@@ -25,8 +25,10 @@ export class CarFactory {
             this.startBlueButton.setAttribute('disabled', 'true');
             console.log('CarFactory', 'SWITCH_TO_COLOR', color);
             this.createCar(color);
+            // EX01: this.createCar(color) should return a Promise, make sure the following lines only get executed when the promise completes
             console.log('CarFactory', 'SWITCHED_TO_COLOR', color);
             this.startBlueButton.removeAttribute('disabled');
+            // EX01: End
         }
     }
 

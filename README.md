@@ -31,6 +31,8 @@ yarn test
 The exercises revolve around a virtual car factory.
 Check out branch `exercises` for an overview of all exercises.
 
+* [Exercise 1: Promise to be good](exercises/EXERCISE01.md)
+
 ## Slides
 
 Check out branch `slides` to find the slides in folder `docs`.
