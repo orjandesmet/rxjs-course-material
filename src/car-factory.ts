@@ -5,7 +5,7 @@ export class CarFactory {
     private carAssemblyLine = new CarAssemblyLine();
     private isRunning = false;
 
-    constructor(private startBlueButton: HTMLButtonElement) {}
+    constructor(private startBlueButton: HTMLButtonElement) { }
 
     startFactory() {
         if (this.isFactoryRunning()) {
@@ -24,11 +24,10 @@ export class CarFactory {
         } else {
             this.startBlueButton.setAttribute('disabled', 'true');
             console.log('CarFactory', 'SWITCH_TO_COLOR', color);
-            this.createCar(color);
-            // EX01: this.createCar(color) should return a Promise, make sure the following lines only get executed when the promise completes
+            this.createCar(color).then(() => {
+                this.startBlueButton.removeAttribute('disabled');
+            });
             console.log('CarFactory', 'SWITCHED_TO_COLOR', color);
-            this.startBlueButton.removeAttribute('disabled');
-            // EX01: End
         }
     }
 
@@ -47,6 +46,6 @@ export class CarFactory {
     }
 
     private createCar(color: string) {
-        this.carAssemblyLine.createCarOnLine(color);
+        return this.carAssemblyLine.createCarOnLine(color);
     }
 }
