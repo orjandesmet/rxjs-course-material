@@ -1,0 +1,40 @@
+#storyboard {
+    display: flex;
+    align-items: baseline;
+}
+
+#assembly-line {
+    margin-left: 10px;
+}
+
+#cars-line {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#cars-line .car {
+    background: linear-gradient(azure, lightgreen);
+    margin: 5px;
+    width: 160px;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#cars-line .car .background {
+    width: 80px;
+    height: 40px;
+    overflow: hidden;
+    -webkit-mask: url('./images/car.svg') no-repeat;
+    mask: url('./images/car.svg') no-repeat;
+    -webkit-mask-size: 80px 40px;
+    mask-size: 80px 40px;
+    transform: translateX(50%);
+}
+
+#cars-line .car .overlay {
+    width: 80px;
+    height: 40px;
+    background: url('./images/car-overlay.svg') no-repeat;
+    background-size: 80px 40px;
+}

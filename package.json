@@ -1,0 +1,33 @@
+{
+  "name": "rxjs-course-material",
+  "version": "0.0.1",
+  "description": "Course material for RxJS",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --port 9000 --inline --progress --profile --colors --watch --content-base src/ --mode development",
+    "build": "webpack --config webpack.config.js --mode production",
+    "build.prod": "webpack --config webpack.config.js -p",
+    "test": "jest --watchAll"
+  },
+  "author": "Orjan De Smet",
+  "license": "MIT",
+  "dependencies": {
+    "rxjs": "^6.4.0",
+    "rxjs-watcher": "^1.1.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.9",
+    "@types/node": "^12.0.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "jest": "^24.1.0",
+    "rxjs-marbles": "^5.0.0",
+    "source-map-loader": "0.2.3",
+    "ts-jest": "^24.0.0",
+    "tslint": "^5.10.0",
+    "tslint-loader": "^3.0.0",
+    "typescript": "^3.0.0",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.1.4"
+  }
+}

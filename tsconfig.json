@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "target": "esnext",
+    "allowJs": true,
+    "types": ["node"],
+    "typeRoots": ["node_modules/@types"],
+    "moduleResolution": "node"
+  },
+  "exclude": ["**/*.spec.ts"]
+}
