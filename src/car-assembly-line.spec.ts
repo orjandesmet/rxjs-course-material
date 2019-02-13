@@ -1,3 +1,4 @@
+import { marbles } from 'rxjs-marbles';
 import { CarAssemblyLine } from './car-assembly-line';
 
 describe('CarAssemblyLine', () => {
@@ -12,13 +13,10 @@ describe('CarAssemblyLine', () => {
     });
 
     describe('createCarOnLine', () => {
-        it('should return a promise which resolves after a time', done => {
-            carAssemblyLine['TIME_TO_CREATE_LINE'] = 0;
-            const returnValue = carAssemblyLine.createCarOnLine('blue');
-            returnValue.then(x => {
-                expect(x).toBe(undefined);
-                done();
-            });
-        });
+        it('should return a promise which resolves after a time', marbles(m => {
+            carAssemblyLine['TIME_TO_CREATE_LINE'] = 30;
+            const returnValue$ = carAssemblyLine.createCarOnLine('blue');
+            m.expect(returnValue$).toBeObservable('30ms (c|)', {c: 0});
+        }));
     });
 });

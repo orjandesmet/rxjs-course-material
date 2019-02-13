@@ -32,6 +32,7 @@ The exercises revolve around a virtual car factory.
 Check out branch `exercises` for an overview of all exercises.
 
 * [Exercise 1: Promise to be good](exercises/EXERCISE01.md)
+* [Exercise 2: Cancelling and Observable](exercises/EXERCISE02.md)
 
 ## Slides
 

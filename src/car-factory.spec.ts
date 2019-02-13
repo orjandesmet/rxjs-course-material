@@ -1,11 +1,14 @@
+import { marbles } from 'rxjs-marbles';
 import { CarFactory } from './car-factory';
 
 describe('CarFactory', () => {
     let carFactory: CarFactory;
     let buttonElementMock: any;
+    let consoleLogSpy: jest.SpyInstance;
 
     beforeEach(() => {
-        jest.spyOn(console, 'log').mockImplementation(() => {});
+        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+        consoleLogSpy.mock.calls = [];
         buttonElementMock = {
             setAttribute: jest.fn(),
             removeAttribute: jest.fn(),
@@ -14,50 +17,58 @@ describe('CarFactory', () => {
     });
 
     describe('startFactory', () => {
-        it('should set isRunning to true when not running', () => {
-            carFactory['isRunning'] = false;
+        it('should log that the factory started when not running', () => {
             carFactory.startFactory();
-            expect(carFactory['isRunning']).toBeTruthy();
+            expect(consoleLogSpy).toHaveBeenCalledWith('CarFactory', 'STARTED');
         });
-        it('should keep isRunning to true when running', () => {
-            carFactory['isRunning'] = true;
+        it('should log that the factory was already running when running', () => {
+            carFactory['subscription'] = {closed: false} as any;
             carFactory.startFactory();
-            expect(carFactory['isRunning']).toBeTruthy();
+            expect(consoleLogSpy).toHaveBeenCalledWith('CarFactory', 'ALREADY_RUNNING');
         });
     });
 
     describe('stopFactory', () => {
-        it('should set isRunning to false when running', () => {
-            carFactory['isRunning'] = false;
+        it('should log that the factory stopped when running', () => {
+            carFactory['subscription'] = {closed: false, unsubscribe: jest.fn()} as any;
             carFactory.stopFactory();
-            expect(carFactory['isRunning']).toBeFalsy();
+            expect(consoleLogSpy).toHaveBeenCalledWith('CarFactory', 'STOPPED');
+            expect(carFactory['subscription'].unsubscribe).toHaveBeenCalled();
         });
-        it('should keep isRunning to false when not running', () => {
-            carFactory['isRunning'] = true;
+        it('should log that the factory is not running when not running', () => {
             carFactory.stopFactory();
-            expect(carFactory['isRunning']).toBeFalsy();
+            expect(consoleLogSpy).toHaveBeenCalledWith('CarFactory', 'NOT_RUNNING');
         });
     });
 
     describe('createCarsInColor', () => {
 
         let createCarSpy: jest.SpyInstance;
+        let stopFactorySpy: jest.SpyInstance;
 
         beforeEach(() => {
             createCarSpy = jest.spyOn(carFactory['carAssemblyLine'], 'createCarOnLine');
+            stopFactorySpy = jest.spyOn(carFactory, 'stopFactory');
         });
 
-        it('should not create cars when not running', () => {
-            carFactory['isRunning'] = false;
+        it('should not create cars when not running', marbles(m => {
+            createCarSpy.mockReturnValue(m.cold('-(c|)', {c: undefined}));
             carFactory.createCarsInColor('blue');
-            expect(createCarSpy).not.toHaveBeenCalled();
-        });
+            m.flush();
+            expect(carFactory['subscription']).toBeDefined();
+            expect(createCarSpy).toHaveBeenCalledTimes(1);
+            expect(createCarSpy).toHaveBeenCalledWith('blue');
+            expect(stopFactorySpy).not.toHaveBeenCalled();
+        }));
 
-        it('should create cars when running', () => {
-            carFactory['isRunning'] = true;
+        it('should create cars when running', marbles(m => {
+            createCarSpy.mockReturnValue(m.cold('-(c|)', {c: undefined}));
+            carFactory['subscription'] = {closed: false, unsubscribe: jest.fn()} as any;
             carFactory.createCarsInColor('red');
+            m.flush();
             expect(createCarSpy).toHaveBeenCalledTimes(1);
             expect(createCarSpy).toHaveBeenCalledWith('red');
-        });
+            expect(stopFactorySpy).toHaveBeenCalledTimes(1);
+        }));
     });
 });
