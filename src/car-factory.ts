@@ -1,4 +1,5 @@
-import { EMPTY, Observable, Subscription } from 'rxjs';
+import { EMPTY, Observable, Subject, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { CarAssemblyLine } from './car-assembly-line';
 import { CarColor } from './model/car';
 
@@ -6,7 +7,7 @@ export class CarFactory {
 
     private carAssemblyLine = new CarAssemblyLine();
     private subscription: Subscription;
-    // EX04: Create the colorSubject here
+    private colorSubject = new Subject<CarColor>();
 
     constructor() { }
 
@@ -16,7 +17,7 @@ export class CarFactory {
             return;
         } else {
             console.log('CarFactory', 'STARTED');
-            this.subscription = assembly // EX04: Replace assembly with this.createCar
+            this.subscription = this.createCars()
                 .subscribe({
                     error: err => {
                         console.log('CarFactory', 'ERROR', err);
@@ -31,11 +32,10 @@ export class CarFactory {
 
     createCarsInColor(color: CarColor) {
         if (this.isFactoryRunning()) {
-            this.stopFactory(); // EX04: Don't stop the factory when its running, instead switch to a different color by setting the color on colorSubject
+            console.log('CarFactory', 'SWITCH_TO_COLOR', color);
+            this.colorSubject.next(color);
+            console.log('CarFactory', 'SWITCHED_TO_COLOR', color);
         }
-        console.log('CarFactory', 'SWITCH_TO_COLOR', color);
-        this.startFactory(this.createCars(color)); // EX04: Put the color on the colorSubject using its next function
-        console.log('CarFactory', 'SWITCHED_TO_COLOR', color);
     }
 
     stopFactory() {
@@ -61,8 +61,9 @@ export class CarFactory {
         return this.subscription && !this.subscription.closed;
     }
 
-    private createCars(color: CarColor) { // EX04: we wouldn't need to pass the color as a parameter, because it will be inside the colorSubject
-        // EX04: This function will be called only once, so use the correct operator to switch colors from the colorSubject
-        return this.carAssemblyLine.createCarOnLine(color);
+    private createCars() {
+        return this.colorSubject.pipe(
+            switchMap(color => this.carAssemblyLine.createCarOnLine(color))
+        );
     }
 }
