@@ -3,17 +3,12 @@ import { CarFactory } from './car-factory';
 
 describe('CarFactory', () => {
     let carFactory: CarFactory;
-    let buttonElementMock: any;
     let consoleLogSpy: jest.SpyInstance;
 
     beforeEach(() => {
         consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
         consoleLogSpy.mock.calls = [];
-        buttonElementMock = {
-            setAttribute: jest.fn(),
-            removeAttribute: jest.fn(),
-        };
-        carFactory = new CarFactory(buttonElementMock);
+        carFactory = new CarFactory();
     });
 
     describe('startFactory', () => {
@@ -45,30 +40,34 @@ describe('CarFactory', () => {
 
         let createCarSpy: jest.SpyInstance;
         let stopFactorySpy: jest.SpyInstance;
+        let colorSubjectSpy: jest.SpyInstance;
 
         beforeEach(() => {
             createCarSpy = jest.spyOn(carFactory['carAssemblyLine'], 'createCarOnLine');
             stopFactorySpy = jest.spyOn(carFactory, 'stopFactory');
+            colorSubjectSpy = jest.spyOn(carFactory['colorSubject'], 'next');
         });
 
         it('should not create cars when not running', marbles(m => {
             createCarSpy.mockReturnValue(m.cold('-(c|)', {c: undefined}));
             carFactory.createCarsInColor('blue');
             m.flush();
-            expect(carFactory['subscription']).toBeDefined();
-            expect(createCarSpy).toHaveBeenCalledTimes(1);
-            expect(createCarSpy).toHaveBeenCalledWith('blue');
+            expect(carFactory['subscription']).toBeUndefined();
+            expect(createCarSpy).not.toHaveBeenCalled();
             expect(stopFactorySpy).not.toHaveBeenCalled();
+            expect(colorSubjectSpy).not.toHaveBeenCalled();
         }));
 
         it('should create cars when running', marbles(m => {
+            carFactory.startFactory();
             createCarSpy.mockReturnValue(m.cold('-(c|)', {c: undefined}));
             carFactory['subscription'] = {closed: false, unsubscribe: jest.fn()} as any;
             carFactory.createCarsInColor('red');
             m.flush();
             expect(createCarSpy).toHaveBeenCalledTimes(1);
             expect(createCarSpy).toHaveBeenCalledWith('red');
-            expect(stopFactorySpy).toHaveBeenCalledTimes(1);
+            expect(stopFactorySpy).not.toHaveBeenCalledTimes(1);
+            expect(colorSubjectSpy).toHaveBeenCalledWith('red');
         }));
     });
 });

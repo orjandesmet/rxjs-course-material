@@ -1,5 +1,5 @@
-import { timer } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { interval } from 'rxjs';
+import { map, take, tap } from 'rxjs/operators';
 import { Car, CarColor } from './model/car';
 
 export class CarAssemblyLine {
@@ -8,12 +8,13 @@ export class CarAssemblyLine {
 
     createCarOnLine(color: CarColor) {
         console.log('CarAssemblyLine', `START_CREATING_CAR`, color);
-        return timer(this.TIME_TO_CREATE_LINE)
+        return interval(this.TIME_TO_CREATE_LINE)
             .pipe(
-                map(() => Car.build({ color })),
-                tap(car => {
+                take(10),
+                map(counter => ({ car: Car.build({ color }), counter })),
+                tap(({car, counter}) => {
                     const chassisNumber = car.chassisNumber;
-                    console.log('CarAssemblyLine', 'FINISHED_CREATING_CAR', car.color, chassisNumber);
+                    console.log('CarAssemblyLine', 'FINISHED_CREATING_CAR', car.color, chassisNumber, counter + 1);
                 }));
     }
 }
