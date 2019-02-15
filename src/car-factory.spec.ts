@@ -12,9 +12,21 @@ describe('CarFactory', () => {
     });
 
     describe('startFactory', () => {
+
+        let createCarSpy: jest.SpyInstance;
+        let colorSubjectSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            createCarSpy = jest.spyOn(carFactory['carAssemblyLine'], 'createCarOnLine');
+            colorSubjectSpy = jest.spyOn(carFactory['colorSubject'], 'next');
+        });
+
         it('should log that the factory started when not running', () => {
             carFactory.startFactory();
             expect(consoleLogSpy).toHaveBeenCalledWith('CarFactory', 'STARTED');
+            expect(createCarSpy).toHaveBeenCalledTimes(1);
+            expect(createCarSpy).toHaveBeenCalledWith('black');
+            expect(colorSubjectSpy).not.toHaveBeenCalled();
         });
         it('should log that the factory was already running when running', () => {
             carFactory['subscription'] = {closed: false} as any;
@@ -58,13 +70,14 @@ describe('CarFactory', () => {
             expect(colorSubjectSpy).not.toHaveBeenCalled();
         }));
 
-        it('should create cars when running', marbles(m => {
+        it('should switch cars color when running', marbles(m => {
             carFactory.startFactory();
             createCarSpy.mockReturnValue(m.cold('-(c|)', {c: undefined}));
             carFactory['subscription'] = {closed: false, unsubscribe: jest.fn()} as any;
             carFactory.createCarsInColor('red');
             m.flush();
-            expect(createCarSpy).toHaveBeenCalledTimes(1);
+            expect(createCarSpy).toHaveBeenCalledTimes(2);
+            expect(createCarSpy).toHaveBeenCalledWith('black');
             expect(createCarSpy).toHaveBeenCalledWith('red');
             expect(stopFactorySpy).not.toHaveBeenCalledTimes(1);
             expect(colorSubjectSpy).toHaveBeenCalledWith('red');

@@ -1,10 +1,16 @@
 #storyboard {
     display: flex;
-    align-items: baseline;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+#storyboard > div {
+    width: 150px;
 }
 
 #assembly-line {
     margin-left: 10px;
+    width: 350px !important;
 }
 
 #cars-line {
@@ -37,4 +43,18 @@
     height: 40px;
     background: url('./images/car-overlay.svg') no-repeat;
     background-size: 80px 40px;
+}
+
+#paint-shop {
+    position: relative;
+}
+
+#paint-shop__color {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
+    border-radius: 50%;
+    right: 80;
+    top: 20;
 }

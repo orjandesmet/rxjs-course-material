@@ -5,21 +5,35 @@ export class UIUpdater {
 
     factoryUpdate$ = new Subject<any[]>();
     assemblyLineUpdate$ = new Subject<any[]>();
+    chassisUpdate$ = new Subject<any[]>();
+    wheelsUpdate$ = new Subject<any[]>();
+    steeringWheelUpdate$ = new Subject<any[]>();
+    seatsUpdate$ = new Subject<any[]>();
+    paintShopUpdate$ = new Subject<any[]>();
     carsLine$ = new Subject<{ color: string, chassisNr: string }>();
+    updates: {[key: string]: Subject<any[]>} = {
+        'CarFactory': this.factoryUpdate$,
+        'CarAssemblyLine': this.assemblyLineUpdate$,
+        'Chassis': this.chassisUpdate$,
+        'Wheels': this.wheelsUpdate$,
+        'SteeringWheel': this.steeringWheelUpdate$,
+        'Seats': this.seatsUpdate$,
+        'PaintShop': this.paintShopUpdate$,
+    };
 
     constructor() {
         this.updateCarFactory();
         this.updateCarAssemblyLine();
+        this.updateChassisLine();
+        this.updateWheels();
+        this.updateSteeringWheel();
+        this.updateSeats();
+        this.updatePaintShop();
     }
 
     update(target: string, ...status: any[]) {
-        switch (target) {
-            case 'CarFactory':
-                this.factoryUpdate$.next(status);
-                break;
-            case 'CarAssemblyLine':
-                this.assemblyLineUpdate$.next(status);
-                break;
+        if (this.updates[target]) {
+            this.updates[target].next(status);
         }
     }
 
@@ -44,15 +58,9 @@ export class UIUpdater {
 
     private updateCarAssemblyLine() {
         const assemblyLineStatus = document.getElementById('assembly-line__status');
-        const assemblyLineColor = document.getElementById('assembly-line__color');
         const carsLine = document.getElementById('cars-line');
         this.assemblyLineUpdate$.subscribe(status => {
             assemblyLineStatus.innerText = status[0];
-        });
-        this.assemblyLineUpdate$.pipe(
-            filter(status => status[0] === 'START_CREATING_CAR')
-        ).subscribe(color => {
-            assemblyLineColor.innerText = color[1];
         });
         this.assemblyLineUpdate$.pipe(
             filter(status => status[0] === 'FINISHED_CREATING_CAR'),
@@ -68,5 +76,34 @@ export class UIUpdater {
                 </div>`;
             }).reduce((acc, current) => acc + current);
         });
+    }
+
+    private updateChassisLine() {
+        const chassisStatus = document.getElementById('chassis__status');
+        this.chassisUpdate$.subscribe(status => chassisStatus.innerText = status[0]);
+    }
+
+    private updateWheels() {
+        const wheelsStatus = document.getElementById('wheels__status');
+        this.wheelsUpdate$.subscribe(status => wheelsStatus.innerText = status[0]);
+    }
+
+    private updateSteeringWheel() {
+        const steeringWheelStatus = document.getElementById('steering-wheel__status');
+        this.steeringWheelUpdate$.subscribe(status => steeringWheelStatus.innerText = status[0]);
+    }
+
+    private updateSeats() {
+        const seatsStatus = document.getElementById('seats__status');
+        this.seatsUpdate$.subscribe(status => seatsStatus.innerText = status[0]);
+    }
+
+    private updatePaintShop() {
+        const paintShopStatus = document.getElementById('paint-shop__status');
+        const paintShopColor = document.getElementById('paint-shop__color');
+        this.paintShopUpdate$.subscribe(status => paintShopStatus.innerText = status[0]);
+        this.paintShopUpdate$
+        .pipe(filter(status => status[0] === 'STARTED'))
+        .subscribe(status => paintShopColor.style.backgroundColor = status[1]);
     }
 }

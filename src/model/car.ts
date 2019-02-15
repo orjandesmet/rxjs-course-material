@@ -1,26 +1,36 @@
+import { Seat } from './seat';
+import { SteeringWheel } from './steering-wheel';
+import { Wheel } from './wheel';
+
 export type CarColor = 'blue' | 'red' | 'black' | 'white';
 
 export interface Car {
     chassisNumber: string;
     color: CarColor;
+    wheels: Wheel[];
+    steeringWheel: SteeringWheel;
+    seats: Seat[];
 }
 
 export namespace Car {
     export function build(car: Partial<Car> = {}): Car {
         return {
-            chassisNumber: createChassisNumber(),
+            chassisNumber: 'UNKNOWN',
             color: 'white',
+            wheels: [],
+            steeringWheel: null,
+            seats: [],
             ...car,
         };
     }
 
-    function createChassisNumber() {
+    export function createChassisNumber(tick: number) {
         var text = '';
         var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-        for (var i = 0; i < 16; i++)
+        for (var i = 0; i < 13; i++)
             text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-        return text;
+        return `${text}-${ `0${tick + 1}`.substr(-2) }`;
     }
 }

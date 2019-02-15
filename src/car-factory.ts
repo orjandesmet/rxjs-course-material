@@ -1,14 +1,16 @@
 import { BehaviorSubject, EMPTY, Observable, Subject, Subscription } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { CarAssemblyLine } from './car-assembly-line';
 import { CarColor } from './model/car';
+import { PaintShop } from './paint-shop';
 
 export class CarFactory {
 
-    private carAssemblyLine = new CarAssemblyLine();
     private subscription: Subscription;
     private colorSubject = new BehaviorSubject<CarColor>('black');
     private stopAssemblySubject = new Subject<void>();
+    private paintShop = new PaintShop();
+    private carAssemblyLine = new CarAssemblyLine(this.paintShop);
 
     constructor() { }
 
@@ -65,7 +67,8 @@ export class CarFactory {
     private createCars() {
         return this.colorSubject.pipe(
             switchMap(color => this.carAssemblyLine.createCarOnLine(color).pipe(
-                takeUntil(this.stopAssemblySubject)
+                take(10),
+                takeUntil(this.stopAssemblySubject),
             ))
         );
     }
