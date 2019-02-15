@@ -1,4 +1,4 @@
-import { EMPTY, Observable, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { CarAssemblyLine } from './car-assembly-line';
 import { CarColor } from './model/car';
@@ -7,7 +7,7 @@ export class CarFactory {
 
     private carAssemblyLine = new CarAssemblyLine();
     private subscription: Subscription;
-    private colorSubject = new Subject<CarColor>();
+    private colorSubject = new BehaviorSubject<CarColor>('black');
 
     constructor() { }
 
