@@ -1,3 +1,5 @@
+import { Observable, of } from 'rxjs';
+
 export interface Seat {
     tick?: number;
     sports: boolean;
@@ -5,11 +7,11 @@ export interface Seat {
 }
 
 export namespace Seat {
-    export function createSeat(seat: Partial<Seat> = {}): Seat {
-        return {
+    export function createSeat(seat: Partial<Seat> = {}): Observable<Seat> {
+        return of({
             sports: false,
             count: 1,
             ...seat,
-        };
+        });
     }
 }

@@ -10,8 +10,8 @@ import { Wheel } from './model/wheel';
 describe('CarAssemblyLine', () => {
 
     let carAssemblyLine: CarAssemblyLine;
+    let paintShopMock: any;
     let consoleLogSpy: jest.SpyInstance;
-    let paintShopMock;
 
     beforeEach(() => {
         paintShopMock = {
@@ -24,13 +24,13 @@ describe('CarAssemblyLine', () => {
 
     describe('createCarOnLine', () => {
         it('should return a stream of assembled and painted cars', marbles(m => {
-            jest.spyOn(Car, 'createChassisNumber').mockImplementation((tick: number) => `${tick}`);
+            jest.spyOn(Car, 'createChassisNumber').mockImplementation(({ tick }: { tick: number }) => of(`${tick}`));
             jest.spyOn(Wheel, 'createWheel').mockImplementation(({ tick }: { tick: number }) => of({ tick, count: 1, size: 16 }));
-            jest.spyOn(SteeringWheel, 'createSteeringWheel').mockImplementation(({ tick }: { tick: number }) => `${tick}` as any);
-            jest.spyOn(Seat, 'createSeat').mockImplementation(({ tick }: { tick: number }) => ({ tick, count: 1, sports: false }));
+            jest.spyOn(SteeringWheel, 'createSteeringWheel').mockImplementation(({ tick }: { tick: number }) => of(`${tick}`) as any);
+            jest.spyOn(Seat, 'createSeat').mockImplementation(({ tick }: { tick: number }) => of({ tick, count: 1, sports: false }));
 
             const returnValue$ = carAssemblyLine.createCarOnLine('blue').pipe(take(3));
-            m.expect(returnValue$).toBeObservable('2s 0 999ms 1 999ms (2|)', {
+            m.expect(returnValue$).toBeObservable('1975ms 0 999ms 1 999ms (2|)', {
                 0: {
                     car: {
                         chassisNumber: '0',
@@ -91,9 +91,9 @@ describe('CarAssemblyLine', () => {
 
     describe('createChassis', () => {
         it('should return a non-stopping stream of chassis', marbles(m => {
-            jest.spyOn(Car, 'createChassisNumber').mockImplementation((tick: number) => `${tick}`);
+            jest.spyOn(Car, 'createChassisNumber').mockImplementation(({ tick }: { tick: number }) => of(`${tick}`));
             const result$ = carAssemblyLine['createChassis']().pipe(take(5));
-            const expected$ = m.cold('1s 0 999ms 1 999ms 2 999ms 3 999ms (4|)');
+            const expected$ = m.cold('750ms 0 999ms 1 999ms 2 999ms 3 999ms (4|)');
             m.expect(result$).toBeObservable(expected$);
         }));
     });
@@ -122,7 +122,7 @@ describe('CarAssemblyLine', () => {
                 ],
             };
             const result$ = carAssemblyLine['createWheels']().pipe(take(3));
-            const expected$ = m.cold('1s 0 999ms 1 999ms (2|)', returnValues) as any;
+            const expected$ = m.cold('975ms 0 999ms 1 999ms (2|)', returnValues) as any;
             m.expect(result$).toBeObservable(expected$);
         }));
 
@@ -156,23 +156,23 @@ describe('CarAssemblyLine', () => {
                 ],
             };
             const result$ = carAssemblyLine['createWheels']().pipe(take(3));
-            const expected$ = m.cold('1250ms 0 1499ms 1 1499ms (2|)', returnValues) as any;
+            const expected$ = m.cold('1225ms 0 1499ms 1 1499ms (2|)', returnValues) as any;
             m.expect(result$).toBeObservable(expected$);
         }));
     });
 
     describe('createSteeringWheel', () => {
         it('should return a non-stopping stream of chassis', marbles(m => {
-            jest.spyOn(SteeringWheel, 'createSteeringWheel').mockImplementation(({ tick }: { tick: number }) => `${tick}` as any);
+            jest.spyOn(SteeringWheel, 'createSteeringWheel').mockImplementation(({ tick }: { tick: number }) => of(`${tick}`) as any);
             const result$ = carAssemblyLine['createSteeringWheel']().pipe(take(5));
-            const expected$ = m.cold('1s 0 999ms 1 999ms 2 999ms 3 999ms (4|)');
+            const expected$ = m.cold('750ms 0 999ms 1 999ms 2 999ms 3 999ms (4|)');
             m.expect(result$).toBeObservable(expected$);
         }));
     });
 
     describe('createSeats', () => {
         it('should return a non-stopping stream of seats', marbles(m => {
-            jest.spyOn(Seat, 'createSeat').mockImplementation(({ tick }: { tick: number }) => ({ tick, count: 1, sports: false }));
+            jest.spyOn(Seat, 'createSeat').mockImplementation(({ tick }: { tick: number }) => of({ tick, count: 1, sports: false }));
             const returnValues = {
                 '0': [
                     { tick: 0, count: 1, sports: false },
@@ -196,7 +196,7 @@ describe('CarAssemblyLine', () => {
                 ],
             };
             const result$ = carAssemblyLine['createSeats']().pipe(take(5));
-            const expected$ = m.cold('1s 0 999ms 1 999ms 2 999ms 3 999ms (4|)', returnValues) as any;
+            const expected$ = m.cold('950ms 0 999ms 1 999ms 2 999ms 3 999ms (4|)', returnValues) as any;
             m.expect(result$).toBeObservable(expected$);
         }));
     });

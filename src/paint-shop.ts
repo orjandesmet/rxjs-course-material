@@ -8,7 +8,7 @@ export class PaintShop {
             tap(() => console.log('PaintShop', 'STARTED', color)),
             delay(700),
             map(() => ({ ...car, color })),
-            tap(() => console.log('PaintShop', 'FINISHED')),
+            tap(paintedCar => console.log('PaintShop', 'FINISHED', paintedCar)),
         );
     }
 }

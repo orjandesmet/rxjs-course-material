@@ -1,5 +1,6 @@
-import { Subject } from 'rxjs';
-import { filter, map, scan } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Car } from '../model/car';
 
 export class UIUpdater {
 
@@ -10,7 +11,8 @@ export class UIUpdater {
     steeringWheelUpdate$ = new Subject<any[]>();
     seatsUpdate$ = new Subject<any[]>();
     paintShopUpdate$ = new Subject<any[]>();
-    carsLine$ = new Subject<{ color: string, chassisNr: string }>();
+    createdCarsLine$ = new Subject<Car>();
+    carsLine$ = new BehaviorSubject<Car[]>([]);
     updates: {[key: string]: Subject<any[]>} = {
         'CarFactory': this.factoryUpdate$,
         'CarAssemblyLine': this.assemblyLineUpdate$,
@@ -23,12 +25,13 @@ export class UIUpdater {
 
     constructor() {
         this.updateCarFactory();
-        this.updateCarAssemblyLine();
+        this.updateCreatedCarsLine();
         this.updateChassisLine();
         this.updateWheels();
         this.updateSteeringWheel();
         this.updateSeats();
         this.updatePaintShop();
+        this.updateCarsLine();
     }
 
     update(target: string, ...status: any[]) {
@@ -61,25 +64,16 @@ export class UIUpdater {
         });
     }
 
-    private updateCarAssemblyLine() {
+    private updateCreatedCarsLine() {
         const assemblyLineStatus = document.getElementById('assembly-line__status');
-        const carsLine = document.getElementById('cars-line');
         this.assemblyLineUpdate$.subscribe(status => {
             assemblyLineStatus.innerText = status[0];
         });
         this.assemblyLineUpdate$.pipe(
             filter(status => status[0] === 'FINISHED_CREATING_CAR'),
-            map(status => [{ color: status[1], chassisNr: status[2] }]),
-            scan((acc, car) => acc.concat(car))
-        ).subscribe(cars => {
-            carsLine.innerHTML = cars.map(car => {
-                return `<div class="car">
-                <div class="background" style="background-color: ${car.color};">
-                <div class="overlay"></div>
-                </div>
-                <span>${car.chassisNr}</span>
-                </div>`;
-            }).reduce((acc, current) => acc + current);
+            map(status => (status[1]))
+        ).subscribe(car => {
+            this.carsLine$.next(this.carsLine$.getValue().concat(car));
         });
     }
 
@@ -91,7 +85,7 @@ export class UIUpdater {
     private updateWheels() {
         const wheelsStatus = document.getElementById('wheels__status');
         this.wheelsUpdate$.pipe(filter(status => status[0] !== 'FINISHED')).subscribe(status => wheelsStatus.innerText = status[0]);
-        this.wheelsUpdate$.pipe(filter(status => status[0] === 'FINISHED')).subscribe(status => wheelsStatus.innerText = `${status[0]}: ${status[1]}`);
+        this.wheelsUpdate$.pipe(filter(status => status[0] === 'FINISHED')).subscribe(status => wheelsStatus.innerText = `${status[0]}: ${status[1].count}`);
     }
 
     private updateSteeringWheel() {
@@ -102,7 +96,7 @@ export class UIUpdater {
     private updateSeats() {
         const seatsStatus = document.getElementById('seats__status');
         this.seatsUpdate$.pipe(filter(status => status[0] === 'FINISHED')).subscribe(status => seatsStatus.innerText = status[0]);
-        this.seatsUpdate$.pipe(filter(status => status[0] === 'FINISHED')).subscribe(status => seatsStatus.innerText = `${status[0]}: ${status[1]}`);
+        this.seatsUpdate$.pipe(filter(status => status[0] === 'FINISHED')).subscribe(status => seatsStatus.innerText = `${status[0]}: ${status[1].count}`);
     }
 
     private updatePaintShop() {
@@ -112,5 +106,27 @@ export class UIUpdater {
         this.paintShopUpdate$
         .pipe(filter(status => status[0] === 'STARTED'))
         .subscribe(status => paintShopColor.style.backgroundColor = status[1]);
+        this.paintShopUpdate$
+        .pipe(
+            filter(status => status[0] === 'FINISHED'),
+            map(status => status[1] as Car),
+            )
+        .subscribe(paintedCar => {
+            this.carsLine$.next(this.carsLine$.getValue().map(car => car.chassisNumber === paintedCar.chassisNumber ? paintedCar : car));
+        });
+    }
+
+    private updateCarsLine() {
+        const carsLine = document.getElementById('cars-line');
+        this.carsLine$.subscribe(cars => {
+            carsLine.innerHTML = cars.map(car => {
+                return `<div class="car">
+                <div class="background" style="background-color: ${car.color};">
+                <div class="overlay"></div>
+                </div>
+                <span>${car.chassisNumber}</span>
+                </div>`;
+            }).reduce((acc, current) => acc + current, '');
+        });
     }
 }
