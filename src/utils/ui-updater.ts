@@ -45,6 +45,11 @@ export class UIUpdater {
             factoryStatus.innerText = status[0];
         });
         this.factoryUpdate$.pipe(
+            filter(status => status[0] === 'ERROR')
+        ).subscribe(status => {
+            factoryStatus.innerText = `ERROR: ${status[1]}`;
+        });
+        this.factoryUpdate$.pipe(
             filter(status => status[0] === 'NOT_RUNNING')
         ).subscribe(() => {
             alert('The factory is not running');
@@ -85,7 +90,8 @@ export class UIUpdater {
 
     private updateWheels() {
         const wheelsStatus = document.getElementById('wheels__status');
-        this.wheelsUpdate$.subscribe(status => wheelsStatus.innerText = status[0]);
+        this.wheelsUpdate$.pipe(filter(status => status[0] !== 'FINISHED')).subscribe(status => wheelsStatus.innerText = status[0]);
+        this.wheelsUpdate$.pipe(filter(status => status[0] === 'FINISHED')).subscribe(status => wheelsStatus.innerText = `${status[0]}: ${status[1]}`);
     }
 
     private updateSteeringWheel() {
@@ -95,7 +101,8 @@ export class UIUpdater {
 
     private updateSeats() {
         const seatsStatus = document.getElementById('seats__status');
-        this.seatsUpdate$.subscribe(status => seatsStatus.innerText = status[0]);
+        this.seatsUpdate$.pipe(filter(status => status[0] === 'FINISHED')).subscribe(status => seatsStatus.innerText = status[0]);
+        this.seatsUpdate$.pipe(filter(status => status[0] === 'FINISHED')).subscribe(status => seatsStatus.innerText = `${status[0]}: ${status[1]}`);
     }
 
     private updatePaintShop() {

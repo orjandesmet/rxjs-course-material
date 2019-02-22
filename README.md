@@ -36,6 +36,7 @@ Check out branch `exercises` for an overview of all exercises.
 * [Exercise 3: Map Operator](exercises/EXERCISE03.md)
 * [Exercise 4: Switching Streams](exercises/EXERCISE04.md)
 * [Exercise 5: Combining multiple Streams](exercises/EXERCISE05.md)
+* [Exercise 6: Error handling](exercises/EXERCISE06.md)
 
 ## Slides
 

@@ -1,5 +1,5 @@
 import { Observable, timer, zip } from 'rxjs';
-import { concatMap, delay, map, scan, tap } from 'rxjs/operators';
+import { bufferCount, concatMap, delay, map, mergeMap, scan, tap } from 'rxjs/operators';
 import { Car, CarColor } from './model/car';
 import { Seat } from './model/seat';
 import { SteeringWheel } from './model/steering-wheel';
@@ -35,12 +35,14 @@ export class CarAssemblyLine {
     }
 
     private createWheels(): Observable<Wheel[]> {
-        return timer(0, 1000).pipe(
-            delay(300),
+        return timer(0, 250).pipe(
+            delay(75),
             tap(() => console.log('Wheels', 'STARTED')),
-            delay(700),
-            map(tick => [Wheel.createWheel({tick}), Wheel.createWheel({tick}), Wheel.createWheel({tick}), Wheel.createWheel({tick})]),
-            tap(() => console.log('Wheels', 'FINISHED')),
+            delay(175),
+            mergeMap(tick => Wheel.createWheel({tick})),
+            scan((acc, current) => ({...current, count: (acc.count % 4) + 1})),
+            tap(wheel => console.log('Wheels', 'FINISHED', wheel.count)),
+            bufferCount(4),
         );
     }
 
@@ -55,12 +57,14 @@ export class CarAssemblyLine {
     }
 
     private createSeats(): Observable<Seat[]> {
-        return timer(0, 1000).pipe(
-            delay(300),
+        return timer(0, 500).pipe(
+            delay(150),
             tap(() => console.log('Seats', 'STARTED')),
-            delay(700),
-            map(tick => [Seat.createSeat({tick}), Seat.createSeat({tick})]),
-            tap(() => console.log('Seats', 'FINISHED')),
+            delay(350),
+            map(tick => Seat.createSeat({tick})),
+            scan((acc, current) => ({...current, count: (acc.count % 2) + 1})),
+            tap(seats => console.log('Seats', 'FINISHED', seats.count)),
+            bufferCount(2),
         );
     }
 
