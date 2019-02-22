@@ -1,5 +1,5 @@
-import { Observable, timer, zip } from 'rxjs';
-import { bufferCount, concatMap, delay, map, mergeMap, scan, tap } from 'rxjs/operators';
+import { EMPTY, Observable, timer, zip } from 'rxjs';
+import { bufferCount, catchError, concatMap, delay, map, mergeMap, scan, tap } from 'rxjs/operators';
 import { Car, CarColor } from './model/car';
 import { Seat } from './model/seat';
 import { SteeringWheel } from './model/steering-wheel';
@@ -39,7 +39,12 @@ export class CarAssemblyLine {
             delay(75),
             tap(() => console.log('Wheels', 'STARTED')),
             delay(175),
-            mergeMap(tick => Wheel.createWheel({tick})),
+            mergeMap(tick => Wheel.createWheel({tick}).pipe(
+                catchError(() => {
+                    console.log('Wheels', 'REMOVED_SQUARE_WHEEL');
+                    return EMPTY;
+                }))
+            ),
             scan((acc, current) => ({...current, count: (acc.count % 4) + 1})),
             tap(wheel => console.log('Wheels', 'FINISHED', wheel.count)),
             bufferCount(4),
