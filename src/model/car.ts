@@ -17,7 +17,7 @@ export namespace Car {
     export function build(car: Partial<Car> = {}): Car {
         return {
             chassisNumber: 'UNKNOWN',
-            color: 'white',
+            color: null,
             wheels: [],
             steeringWheel: null,
             seats: [],

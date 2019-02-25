@@ -10,8 +10,8 @@ import { Wheel } from './model/wheel';
 describe('CarAssemblyLine', () => {
 
     let carAssemblyLine: CarAssemblyLine;
-    let paintShopMock: any;
     let consoleLogSpy: jest.SpyInstance;
+    let paintShopMock;
 
     beforeEach(() => {
         paintShopMock = {
@@ -19,73 +19,12 @@ describe('CarAssemblyLine', () => {
         };
         consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
         consoleLogSpy.mock.calls = [];
-        carAssemblyLine = new CarAssemblyLine(paintShopMock);
+        carAssemblyLine = new CarAssemblyLine(1);
     });
 
     describe('createCarOnLine', () => {
-        it('should return a stream of assembled and painted cars', marbles(m => {
-            jest.spyOn(Car, 'createChassisNumber').mockImplementation(({ tick }: { tick: number }) => of(`${tick}`));
-            jest.spyOn(Wheel, 'createWheel').mockImplementation(({ tick }: { tick: number }) => of({ tick, count: 1, size: 16 }));
-            jest.spyOn(SteeringWheel, 'createSteeringWheel').mockImplementation(({ tick }: { tick: number }) => of(`${tick}`) as any);
-            jest.spyOn(Seat, 'createSeat').mockImplementation(({ tick }: { tick: number }) => of({ tick, count: 1, sports: false }));
-
-            const returnValue$ = carAssemblyLine.createCarOnLine('blue').pipe(take(3));
-            m.expect(returnValue$).toBeObservable('1975ms 0 999ms 1 999ms (2|)', {
-                0: {
-                    car: {
-                        chassisNumber: '0',
-                        color: 'blue',
-                        wheels: [
-                            { tick: 0, count: 1, size: 16 },
-                            { tick: 1, count: 2, size: 16 },
-                            { tick: 2, count: 3, size: 16 },
-                            { tick: 3, count: 4, size: 16 }
-                        ],
-                        steeringWheel: '0',
-                        seats: [
-                            { tick: 0, count: 1, sports: false },
-                            { tick: 1, count: 2, sports: false },
-                        ]
-                    },
-                    counter: 1
-                },
-                1: {
-                    car: {
-                        chassisNumber: '1',
-                        color: 'blue',
-                        wheels: [
-                            { tick: 4, count: 1, size: 16 },
-                            { tick: 5, count: 2, size: 16 },
-                            { tick: 6, count: 3, size: 16 },
-                            { tick: 7, count: 4, size: 16 }
-                        ],
-                        steeringWheel: '1',
-                        seats: [
-                            { tick: 2, count: 1, sports: false },
-                            { tick: 3, count: 2, sports: false },
-                        ]
-                    },
-                    counter: 2
-                },
-                2: {
-                    car: {
-                        chassisNumber: '2',
-                        color: 'blue',
-                        wheels: [
-                            { tick: 8, count: 1, size: 16 },
-                            { tick: 9, count: 2, size: 16 },
-                            { tick: 10, count: 3, size: 16 },
-                            { tick: 11, count: 4, size: 16 }
-                        ],
-                        steeringWheel: '2',
-                        seats: [
-                            { tick: 4, count: 1, sports: false },
-                            { tick: 5, count: 2, sports: false },
-                        ]
-                    },
-                    counter: 3
-                },
-            });
+        it('should return a stream zipped by separate streams in 1s', marbles(m => {
+            fail('IMPLEMENT EXERCISE 8 HERE');
         }));
     });
 

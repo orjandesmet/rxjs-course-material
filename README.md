@@ -38,6 +38,7 @@ Check out branch `exercises` for an overview of all exercises.
 * [Exercise 5: Combining multiple Streams](exercises/EXERCISE05.md)
 * [Exercise 6: Error handling](exercises/EXERCISE06.md)
 * [Exercise 7: Pipeable Operators](exercises/EXERCISE07.md)
+* [Exercise 8: Unit Testing](exercises/EXERCISE08.md)
 
 ## Slides
 

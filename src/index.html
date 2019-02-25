@@ -1,58 +1,116 @@
 <html>
+
 <head>
     <link rel="stylesheet" type="text/css" href="./styles.css">
 </head>
+
 <body>
     <h1>Car Factory</h1>
-    <button type="button" id="btn-start">Start Factory!</button>
-    <button type="button" id="btn-start-blue">Create 10 Blue Cars</button>
-    <button type="button" id="btn-start-red">Create 10 Red Cars</button>
-    <button type="button" id="btn-start-black">Create 10 Black Cars</button>
-    <button type="button" id="btn-start-white">Create 10 White Cars</button>
-    <button type="button" id="btn-stop-assembly-line">Stop Assembly Line!</button>
-    <button type="button" id="btn-stop">Stop Factory!</button>
     <pre id="log"></pre>
-    <div id="storyboard">
-        <div id="factory">
-            <img src="images/factory.svg" height="100px">
-            <div id="factory__status"></div>
+    <button type="button" id="btn-start">Start Factory!</button>
+    <button type="button" id="btn-stop">Stop Factory!</button>
+    <div id="factory">
+        <img src="images/factory.svg" height="100px">
+        <div id="factory__status"></div>
+    </div>
+    <div class="assembly-lines">
+        <div>
+            <div class="storyboard__title">
+                Assembly Line 1
+                <button type="button" id="btn-start-assembly-line-1">Start Assembly Line!</button>
+                <button type="button" id="btn-stop-assembly-line-1">Stop Assembly Line!</button>
+            </div>
+            <div class="storyboard">
+                <div class="assembly-line">
+                    <img src="images/assembly-line.svg" height="50px">
+                    <div id="assembly-line__1__status"></div>
+                </div>
+                <div class="assembly-line-grid">
+                    <div class="chassis">
+                        <div>Chassis</div>
+                        <img src="images/assembly-line.svg" height="30px">
+                        <img src="images/chassis.svg" height="30px">
+                        <div id="chassis__1__status"></div>
+                    </div>
+                    <div class="wheels">
+                        <div>Wheels</div>
+                        <img src="images/assembly-line.svg" height="30px">
+                        <img src="images/wheel.svg" height="30px">
+                        <div id="wheels__1__status">&nbsp;</div>
+                    </div>
+                    <div class="steering-wheel">
+                        <div>Steering Wheel</div>
+                        <img src="images/assembly-line.svg" height="30px">
+                        <img src="images/steering-wheel.svg" height="30px">
+                        <div id="steering-wheel__1__status">&nbsp;</div>
+                    </div>
+                    <div class="seats">
+                        <div>Seats</div>
+                        <img src="images/assembly-line.svg" height="30px">
+                        <img src="images/car-seat.svg" height="30px">
+                        <div id="seats__1__status">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="assembly-line">
-            <img src="images/assembly-line.svg" height="50px">
-            <div id="assembly-line__status"></div>
+        <div>
+            <div class="storyboard__title">
+                Assembly Line 2
+                <button type="button" id="btn-start-assembly-line-2">Start Assembly Line!</button>
+                <button type="button" id="btn-stop-assembly-line-2">Stop Assembly Line!</button>
+            </div>
+            <div class="storyboard">
+                <div class="assembly-line">
+                    <img src="images/assembly-line.svg" height="50px">
+                    <div id="assembly-line__2__status"></div>
+                </div>
+                <div class="assembly-line-grid">
+                    <div class="chassis">
+                        <div>Chassis</div>
+                        <img src="images/assembly-line.svg" height="30px">
+                        <img src="images/chassis.svg" height="30px">
+                        <div id="chassis__2__status"></div>
+                    </div>
+                    <div class="wheels">
+                        <div>Wheels</div>
+                        <img src="images/assembly-line.svg" height="30px">
+                        <img src="images/wheel.svg" height="30px">
+                        <div id="wheels__2__status">&nbsp;</div>
+                    </div>
+                    <div class="steering-wheel">
+                        <div>Steering Wheel</div>
+                        <img src="images/assembly-line.svg" height="30px">
+                        <img src="images/steering-wheel.svg" height="30px">
+                        <div id="steering-wheel__2__status">&nbsp;</div>
+                    </div>
+                    <div class="seats">
+                        <div>Seats</div>
+                        <img src="images/assembly-line.svg" height="30px">
+                        <img src="images/car-seat.svg" height="30px">
+                        <div id="seats__2__status">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="chassis">
-            <div>Chassis</div>
-            <img src="images/assembly-line.svg" height="30px">
-            <img src="images/chassis.svg" height="30px">
-            <div id="chassis__status"></div>
-        </div>
-        <div id="wheels">
-            <div>Wheels</div>
-            <img src="images/assembly-line.svg" height="30px">
-            <img src="images/wheel.svg" height="30px">
-            <div id="wheels__status">&nbsp;</div>
-        </div>
-        <div id="steering-wheel">
-            <div>Steering Wheel</div>
-            <img src="images/assembly-line.svg" height="30px">
-            <img src="images/steering-wheel.svg" height="30px">
-            <div id="steering-wheel__status">&nbsp;</div>
-        </div>
-        <div id="seats">
-            <div>Seats</div>
-            <img src="images/assembly-line.svg" height="30px">
-            <img src="images/car-seat.svg" height="30px">
-            <div id="seats__status">&nbsp;</div>
-        </div>
+    </div>
+    <div class="storyboard__title">
+        <div>Paint Shop</div>
+        <button type="button" id="btn-start-paint-shop">Start!</button>
+        <button type="button" id="btn-stop-paint-shop">Stop!</button>
+        <button type="button" id="btn-start-blue">Switch to Blue</button>
+        <button type="button" id="btn-start-red">Switch to Red</button>
+        <button type="button" id="btn-start-black">Switch to Black</button>
+        <button type="button" id="btn-start-white">Switch to White</button>
+    </div>
+    <div class="storyboard">
         <div id="paint-shop">
-            <div>Paint Shop</div>
-            <img src="images/paint-shop.svg" height="30px">
-            <div id="paint-shop__color"></div>
+            <img src="images/paint-shop.svg" height="50px">
+            <div id="paint-shop__color" style="background-color: black"></div>
             <div id="paint-shop__status">&nbsp;</div>
         </div>
     </div>
     <div id="cars-line"></div>
     <script src="/main.bundle.js"></script>
 </body>
+
 </html>

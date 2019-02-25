@@ -1,16 +1,40 @@
-#storyboard {
+
+
+.storyboard__title {
+    border: 1px solid gray;
+}
+
+
+.assembly-lines {
     display: flex;
-    align-items: flex-end;
-    flex-wrap: wrap;
+    justify-content: space-evenly;
 }
 
-#storyboard > div {
-    width: 150px;
+.assembly-lines > div {
+    flex-grow: 1;
 }
 
-#assembly-line {
+.assembly-lines > div + div {
     margin-left: 10px;
-    width: 350px !important;
+}
+
+.storyboard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid gray;
+    margin-bottom: 5px;
+}
+
+.assembly-line {
+    margin-left: 10px;
+}
+
+.assembly-line-grid {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 10px;
 }
 
 #cars-line {
@@ -19,7 +43,7 @@
 }
 
 #cars-line .car {
-    background: linear-gradient(azure, lightgreen);
+    background: linear-gradient(azure, red);
     margin: 5px;
     width: 160px;
     border: 1px solid black;
@@ -47,6 +71,7 @@
 
 #paint-shop {
     position: relative;
+    width: 200px;
 }
 
 #paint-shop__color {

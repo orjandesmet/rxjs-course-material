@@ -15,7 +15,7 @@ describe('Car Assembly Operators', () => {
             const time = 300;
             const name = 'Something';
 
-            const result$ = carAssemblyOperator(name, time, creator)(m.cold('x|', {x: undefined}));
+            const result$ = carAssemblyOperator(1)(name, time, creator)(m.cold('x|', {x: undefined}));
             m.expect(result$).toBeObservable('300ms ---(s|)', {s: 'SOMETHING'});
             m.flush();
             expect(consoleLogSpy).toHaveBeenCalledTimes(2);
@@ -29,7 +29,7 @@ describe('Car Assembly Operators', () => {
             const time = 300;
             const name = 'Something';
 
-            const result$ = carAssemblyOperator(name, time, creator)(m.cold('x|', {x: undefined}));
+            const result$ = carAssemblyOperator(1)(name, time, creator)(m.cold('x|', {x: undefined}));
             m.expect(result$).toBeObservable('300ms ---|', {s: 'SOMETHING'});
             m.flush();
             expect(consoleLogSpy).toHaveBeenCalledTimes(2);
@@ -46,7 +46,7 @@ describe('Car Assembly Operators', () => {
             const name = 'Something';
             type T = {count: number, text: string};
 
-            const result$ = multiCarAssemblyOperator<T>(name, time, creator, 3)(m.cold('x 300ms x 300ms x|', {x: undefined}));
+            const result$ = multiCarAssemblyOperator<T>(1)<T>(name, time, creator, 3)(m.cold('x 300ms x 300ms x|', {x: undefined}));
             m.expect(result$).toBeObservable('900ms -----(s|)', {s: [{count: 1, text: 'SOMETHING' }, {count: 2, text: 'SOMETHING' }, {count: 3, text: 'SOMETHING' }]});
             m.flush();
             expect(consoleLogSpy).toHaveBeenCalledTimes(6);
@@ -61,7 +61,7 @@ describe('Car Assembly Operators', () => {
             const name = 'Something';
             type T = {count: number, text: string};
 
-            const result$ = multiCarAssemblyOperator<T>(name, time, creator, 3)(m.cold('x 300ms x 300ms x|', {x: undefined}));
+            const result$ = multiCarAssemblyOperator<T>(1)<T>(name, time, creator, 3)(m.cold('x 300ms x 300ms x|', {x: undefined}));
             m.expect(result$).toBeObservable('900ms -----|', {s: [{count: 1, text: 'SOMETHING' }, {count: 2, text: 'SOMETHING' }, {count: 3, text: 'SOMETHING' }]});
             m.flush();
             expect(consoleLogSpy).toHaveBeenCalledTimes(6);

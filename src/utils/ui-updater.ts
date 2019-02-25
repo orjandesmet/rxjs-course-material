@@ -65,38 +65,38 @@ export class UIUpdater {
     }
 
     private updateCreatedCarsLine() {
-        const assemblyLineStatus = document.getElementById('assembly-line__status');
+        const assemblyLineStatus = (lineNumber: number) => document.getElementById(`assembly-line__${lineNumber}__status`);
         this.assemblyLineUpdate$.subscribe(status => {
-            assemblyLineStatus.innerText = status[0];
+            assemblyLineStatus(status[0]).innerText = status[1];
         });
         this.assemblyLineUpdate$.pipe(
-            filter(status => status[0] === 'FINISHED_CREATING_CAR'),
-            map(status => (status[1]))
+            filter(status => status[1] === 'FINISHED_CREATING_CAR'),
+            map(status => (status[2]))
         ).subscribe(car => {
             this.carsLine$.next(this.carsLine$.getValue().concat(car));
         });
     }
 
     private updateChassisLine() {
-        const chassisStatus = document.getElementById('chassis__status');
-        this.chassisUpdate$.subscribe(status => chassisStatus.innerText = status[0]);
+        const chassisStatus = (lineNumber: number) => document.getElementById(`chassis__${lineNumber}__status`);
+        this.chassisUpdate$.subscribe(status => chassisStatus(status[0]).innerText = status[1]);
     }
 
     private updateWheels() {
-        const wheelsStatus = document.getElementById('wheels__status');
-        this.wheelsUpdate$.pipe(filter(status => status[0] !== 'FINISHED')).subscribe(status => wheelsStatus.innerText = status[0]);
-        this.wheelsUpdate$.pipe(filter(status => status[0] === 'FINISHED')).subscribe(status => wheelsStatus.innerText = `${status[0]}: ${status[1].count}`);
+        const wheelsStatus = (lineNumber: number) => document.getElementById(`wheels__${lineNumber}__status`);
+        this.wheelsUpdate$.pipe(filter(status => status[1] !== 'FINISHED')).subscribe(status => wheelsStatus(status[0]).innerText = status[1]);
+        this.wheelsUpdate$.pipe(filter(status => status[1] === 'FINISHED')).subscribe(status => wheelsStatus(status[0]).innerText = `${status[1]}: ${status[2].count}`);
     }
 
     private updateSteeringWheel() {
-        const steeringWheelStatus = document.getElementById('steering-wheel__status');
-        this.steeringWheelUpdate$.subscribe(status => steeringWheelStatus.innerText = status[0]);
+        const steeringWheelStatus = (lineNumber: number) => document.getElementById(`steering-wheel__${lineNumber}__status`);
+        this.steeringWheelUpdate$.subscribe(status => steeringWheelStatus(status[0]).innerText = status[1]);
     }
 
     private updateSeats() {
-        const seatsStatus = document.getElementById('seats__status');
-        this.seatsUpdate$.pipe(filter(status => status[0] === 'FINISHED')).subscribe(status => seatsStatus.innerText = status[0]);
-        this.seatsUpdate$.pipe(filter(status => status[0] === 'FINISHED')).subscribe(status => seatsStatus.innerText = `${status[0]}: ${status[1].count}`);
+        const seatsStatus = (lineNumber: number) => document.getElementById(`seats__${lineNumber}__status`);
+        this.seatsUpdate$.pipe(filter(status => status[1] === 'FINISHED')).subscribe(status => seatsStatus(status[0]).innerText = status[1]);
+        this.seatsUpdate$.pipe(filter(status => status[1] === 'FINISHED')).subscribe(status => seatsStatus(status[0]).innerText = `${status[1]}: ${status[2].count}`);
     }
 
     private updatePaintShop() {
@@ -104,7 +104,7 @@ export class UIUpdater {
         const paintShopColor = document.getElementById('paint-shop__color');
         this.paintShopUpdate$.subscribe(status => paintShopStatus.innerText = status[0]);
         this.paintShopUpdate$
-        .pipe(filter(status => status[0] === 'STARTED'))
+        .pipe(filter(status => status[0] === 'SWITCH'))
         .subscribe(status => paintShopColor.style.backgroundColor = status[1]);
         this.paintShopUpdate$
         .pipe(
@@ -120,7 +120,7 @@ export class UIUpdater {
         const carsLine = document.getElementById('cars-line');
         this.carsLine$.subscribe(cars => {
             carsLine.innerHTML = cars.map(car => {
-                return `<div class="car">
+                return `<div class="car"${car.color === null ? '' : 'style="background: linear-gradient(azure, lightgreen);"' }>
                 <div class="background" style="background-color: ${car.color};">
                 <div class="overlay"></div>
                 </div>
