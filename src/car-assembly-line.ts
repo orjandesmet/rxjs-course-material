@@ -1,5 +1,6 @@
-import { EMPTY, Observable, timer, zip } from 'rxjs';
-import { bufferCount, catchError, concatMap, delay, map, mergeMap, scan, tap } from 'rxjs/operators';
+import { Observable, timer, zip } from 'rxjs';
+import { concatMap, delay, map, scan, tap } from 'rxjs/operators';
+import { carAssemblyOperator, multiCarAssemblyOperator } from './car-assembly-operator';
 import { Car, CarColor } from './model/car';
 import { Seat } from './model/seat';
 import { SteeringWheel } from './model/steering-wheel';
@@ -25,65 +26,25 @@ export class CarAssemblyLine {
 
     private createChassis(): Observable<string> {
         return timer(0, 1000).pipe(
-            delay(250),
-            tap(() => console.log('Chassis', 'STARTED')),
-            delay(500),
-            mergeMap(tick => Car.createChassisNumber({tick}).pipe(
-                catchError(err => {
-                    console.log('Chassis', 'RESOLVED_ERROR', err);
-                    return EMPTY;
-                }))
-            ),
-            tap(chassisNumber => console.log('Chassis', 'FINISHED', chassisNumber)),
+            carAssemblyOperator<string>('Chassis', 750, Car.createChassisNumber),
         );
     }
 
     private createWheels(): Observable<Wheel[]> {
         return timer(0, 250).pipe(
-            delay(75),
-            tap(() => console.log('Wheels', 'STARTED')),
-            delay(150),
-            mergeMap(tick => Wheel.createWheel({tick}).pipe(
-                catchError(err => {
-                    console.log('Wheels', 'RESOLVED_ERROR', err);
-                    return EMPTY;
-                }))
-            ),
-            scan((acc, current) => ({...current, count: (acc.count % 4) + 1})),
-            tap(wheel => console.log('Wheels', 'FINISHED', wheel)),
-            bufferCount(4),
+            multiCarAssemblyOperator<Wheel>('Wheels', 225, Wheel.createWheel, 4),
         );
     }
 
     private createSteeringWheel(): Observable<SteeringWheel> {
         return timer(0, 1000).pipe(
-            delay(250),
-            tap(() => console.log('SteeringWheel', 'STARTED')),
-            delay(500),
-            mergeMap(tick => SteeringWheel.createSteeringWheel({tick}).pipe(
-                catchError(err => {
-                    console.log('SteeringWheel', 'RESOLVED_ERROR', err);
-                    return EMPTY;
-                }))
-            ),
-            tap(steeringWheel => console.log('SteeringWheel', 'FINISHED', steeringWheel)),
+            carAssemblyOperator<SteeringWheel>('SteeringWheel', 750, SteeringWheel.createSteeringWheel),
         );
     }
 
     private createSeats(): Observable<Seat[]> {
         return timer(0, 500).pipe(
-            delay(150),
-            tap(() => console.log('Seats', 'STARTED')),
-            delay(300),
-            mergeMap(tick => Seat.createSeat({tick}).pipe(
-                catchError(err => {
-                    console.log('Seats', 'RESOLVED_ERROR', err);
-                    return EMPTY;
-                }))
-            ),
-            scan((acc, current) => ({...current, count: (acc.count % 2) + 1})),
-            tap(seats => console.log('Seats', 'FINISHED', seats)),
-            bufferCount(2),
+            multiCarAssemblyOperator<Seat>('Seats', 450, Seat.createSeat, 2),
         );
     }
 
