@@ -19,9 +19,9 @@ describe('Car Assembly Operators', () => {
             m.expect(result$).toBeObservable('300ms ---(s|)', {s: 'SOMETHING'});
             m.flush();
             expect(consoleLogSpy).toHaveBeenCalledTimes(2);
-            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 'STARTED');
-            expect(consoleLogSpy).not.toHaveBeenCalledWith('Something', 'RESOLVED_ERROR', 'error');
-            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 'FINISHED', 'SOMETHING');
+            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 1, 'STARTED');
+            expect(consoleLogSpy).not.toHaveBeenCalledWith('Something', 1, 'RESOLVED_ERROR', 'error');
+            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 1, 'FINISHED', 'SOMETHING');
         }));
 
         it('should return EMPTY on error', marbles(m => {
@@ -33,9 +33,9 @@ describe('Car Assembly Operators', () => {
             m.expect(result$).toBeObservable('300ms ---|', {s: 'SOMETHING'});
             m.flush();
             expect(consoleLogSpy).toHaveBeenCalledTimes(2);
-            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 'STARTED');
-            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 'RESOLVED_ERROR', 'error');
-            expect(consoleLogSpy).not.toHaveBeenCalledWith('Something', 'FINISHED', 'SOMETHING');
+            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 1, 'STARTED');
+            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 1, 'RESOLVED_ERROR', 'error');
+            expect(consoleLogSpy).not.toHaveBeenCalledWith('Something', 1, 'FINISHED', 'SOMETHING');
         }));
     });
 
@@ -50,9 +50,9 @@ describe('Car Assembly Operators', () => {
             m.expect(result$).toBeObservable('900ms -----(s|)', {s: [{count: 1, text: 'SOMETHING' }, {count: 2, text: 'SOMETHING' }, {count: 3, text: 'SOMETHING' }]});
             m.flush();
             expect(consoleLogSpy).toHaveBeenCalledTimes(6);
-            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 'STARTED');
-            expect(consoleLogSpy).not.toHaveBeenCalledWith('Something', 'RESOLVED_ERROR', 'error');
-            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 'FINISHED', {count: 1, text: 'SOMETHING' });
+            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 1, 'STARTED');
+            expect(consoleLogSpy).not.toHaveBeenCalledWith('Something', 1, 'RESOLVED_ERROR', 'error');
+            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 1, 'FINISHED', {count: 1, text: 'SOMETHING' });
         }));
 
         it('should return EMPTY on error', marbles(m => {
@@ -65,9 +65,9 @@ describe('Car Assembly Operators', () => {
             m.expect(result$).toBeObservable('900ms -----|', {s: [{count: 1, text: 'SOMETHING' }, {count: 2, text: 'SOMETHING' }, {count: 3, text: 'SOMETHING' }]});
             m.flush();
             expect(consoleLogSpy).toHaveBeenCalledTimes(6);
-            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 'STARTED');
-            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 'RESOLVED_ERROR', 'error');
-            expect(consoleLogSpy).not.toHaveBeenCalledWith('Something', 'FINISHED', 'SOMETHING');
+            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 1, 'STARTED');
+            expect(consoleLogSpy).toHaveBeenCalledWith('Something', 1, 'RESOLVED_ERROR', 'error');
+            expect(consoleLogSpy).not.toHaveBeenCalledWith('Something', 1, 'FINISHED', 'SOMETHING');
         }));
     });
 });
